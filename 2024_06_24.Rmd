@@ -31,6 +31,12 @@ df <- subset(df, series == "GDP per capita (US dollars)" & year == "2021")
 head(df)
 ```
 
+```{r}
+library(openxlsx)
+df_country <- stri_enc_toutf8(df$region)
+# write.xlsx(df, 'name-of-your-excel-file.xlsx')
+write.xlsx(df_country, "country_list.xlsx")
+```
 
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
