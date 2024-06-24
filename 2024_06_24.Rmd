@@ -3,21 +3,28 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
 ```{r}
 library(readr)
-df_raw <- read_csv("SYB66_230_202310_GDP and GDP Per Capita.csv", skip=1)
+library(dplyr)
+library(stringi)
+library(writexl)
+library(openxlsx)
+
+```
+
+```{r}
+df_raw <- read.csv("SYB66_230_202310_GDP and GDP Per Capita.csv", skip=1, encoding="UTF-8")
 # View(df_raw)
 
 ```
+
+
 ```{r}
 colnames(df_raw)
 ```
 ```{r}
-df <- subset(df_raw, select = -c(`Region/Country/Area`, `Footnotes`, `Source`))
+df <- subset(df_raw, select = -c(`Region.Country.Area`, `Footnotes`, `Source`))
 names(df) <- c("region", "year", "series", "value")
 head(df)
 ```
@@ -31,16 +38,28 @@ df <- subset(df, series == "GDP per capita (US dollars)" & year == "2021")
 head(df)
 ```
 
+
 ```{r}
-library(openxlsx)
-df_country <- stri_enc_toutf8(df$region)
-# write.xlsx(df, 'name-of-your-excel-file.xlsx')
+
+
+# read.csv2(file("filename", encoding="UTF-8"))
+# df <- stri_enc_toutf8(df)
+# df_country <- stri_enc_toutf8(df$region)
+# df_country <- apply(df$region, 1, stri_enc_toutf8)
+# df_country <- df$region
+# new_df <- df[, c("col1", "col3")]
+# df_country <- df[, "region"]
+# df %>% select(col1, col3)
+df_country <- df |> select(region)
+# df_country <- stri_enc_toutf8(df_country)
+# df_country <- iconv(df_country, to="UTF-8")
+df_country
+```
+```{r}
 write.xlsx(df_country, "country_list.xlsx")
 ```
 
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+write_xlsx(df_country, "country_list2.xlsx")
+df_country
+```
